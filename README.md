@@ -1,3 +1,9 @@
+To run project:
+clone the git repository into your computer
+run "npm install" to install all dependencies
+use "env.example" as a template and create a .env in the root of the project, you'll need to configure the variables according to your environment.
+run "npm run start" to load project in development server
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
