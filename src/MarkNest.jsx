@@ -4,7 +4,7 @@ import {Col, Form, FormGroup, Button, Modal, FormControl, HelpBlock, ControlLabe
 class MarkNest extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showModal: false, lat:null, long:null, imageFile: null};
+        this.state = {showModal: false, location:null, imageFile: null};
     }
 
     closeModal(){
@@ -31,13 +31,14 @@ class MarkNest extends React.Component {
     getUserLocations() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
-                this.setState({lat: position.coords.latitude, long:position.coords.longitude, showModal: true});
+                let location = {latitude:position.coords.latitude, longitude:position.coords.longitude};
+                this.setState({location:location, showModal: true});
             });
         }
     }
 
     save() {
-        let location = {latitude:this.state.lat, longitude: this.state.long};
+        let location = this.state.location;
         let picture = this.state.imageFile;
         let headers = new Headers();
 
@@ -48,7 +49,7 @@ class MarkNest extends React.Component {
             mode: "cors"
         }
 
-        if(picture) {
+        if(picture && location) {
             headers.append('Content-Type', 'application/octet-stream');
             config.body = picture;
             config.headers = headers;
@@ -61,25 +62,25 @@ class MarkNest extends React.Component {
                 fetch(process.env.REACT_APP_API_URL + "nest",config).then(function(response){
                     return response.json();
                 }).then((data) =>{
-                    console.log(data);
                     this.props.navigateHome();
                 });
             });
-        } else {
+        } else if(location) {
             headers.append('Content-Type', 'application/json');
             config.body = JSON.stringify({location:location});
             config.headers = headers;
             fetch(process.env.REACT_APP_API_URL + "nest",config).then(function(response){
                 return response.json();
-            }).then(function(data){
-                console.log(data);
+            }).then((data) => {
+                this.props.navigateHome();
             });
         }
     }
 
     componentDidUpdate() {
         if(this.state.showModal) {
-            let latlon = new google.maps.LatLng(this.state.lat, this.state.long);
+            let location = this.state.location;
+            let latlon = new google.maps.LatLng(location.latitude, location.longitude);
 
             let myOptions = {
                 center:latlon,zoom:14,
