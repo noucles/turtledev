@@ -1,7 +1,8 @@
 import React from 'react';
 import {Grid, Row, Col, Panel, Form, FormGroup, Button} from 'react-bootstrap';
-import MarkNest from './MarkNest'
-import SubmittedNests from './SubmittedNests'
+import MarkNest from './MarkNest';
+import SubmittedNests from './SubmittedNests';
+import { browserHistory } from 'react-router';
 
 class Home extends React.Component {
     constructor(props) {
@@ -24,12 +25,12 @@ class Home extends React.Component {
                 <Form horizontal>
                     <FormGroup>
                         <Col sm={6} smOffset={3}>
-                            <Button onClick={() => this.navigate("MarkNest")} bsStyle="primary" bsSize="large" block >Mark a Nest</Button>
+                            <Button onClick={() => browserHistory.push('/mark')} bsStyle="primary" bsSize="large" block >Mark a Nest</Button>
                         </Col>
                     </FormGroup>
                     <FormGroup>
                         <Col sm={6} smOffset={3}>
-                            <Button onClick={() => this.navigate("SubmittedNests")} bsStyle="primary"bsSize="large" block>Submitted Nests</Button>
+                            <Button onClick={() => browserHistory.push('/submitted')} bsStyle="primary" bsSize="large" block>Submitted Nests</Button>
                         </Col>
                     </FormGroup>
                 </Form>

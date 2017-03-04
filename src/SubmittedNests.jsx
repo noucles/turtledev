@@ -1,6 +1,6 @@
 import React from 'react';
 import ShowNest from './ShowNest';
-import {FormGroup, Button, ListGroup, ListGroupItem} from 'react-bootstrap';
+import {Button, ListGroup, ListGroupItem} from 'react-bootstrap';
 /* eslint-disable no-undef */
 
 class SubmittedNests extends React.Component {
@@ -18,7 +18,7 @@ class SubmittedNests extends React.Component {
         let config = {
             method:"GET",
             mode: "cors"
-        }
+        };
 
         headers.append('apiKey', 'xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289');
         config.headers = headers;
@@ -44,11 +44,11 @@ class SubmittedNests extends React.Component {
         let config = {
             method:"DELETE",
             mode:"cors"
-        }
+        };
 
         headers.append('apiKey', 'xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289');
         config.headers = headers;
-        fetch(process.env.REACT_APP_API_URL + "Nest/" + nest.nestId, config).then((response) => {
+        fetch(process.env.REACT_APP_API_URL + "Nest/" + nest.nestId, config).then(() => {
            this.getNests();
         });
     }
@@ -67,9 +67,6 @@ class SubmittedNests extends React.Component {
                     <ListGroup>
                         {list}
                     </ListGroup>
-                    <FormGroup>
-                        <Button onClick={() => this.props.navigateHome()}>Back</Button>
-                    </FormGroup>
                     {this.state.showModal &&
                         <ShowNest nest={this.state.selectedNest} closeShowNest={() => this.closeShowNest()}/>
                     }

@@ -1,5 +1,6 @@
 import React from 'react';
 import {Col, Form, FormGroup, Button, Modal, FormControl, HelpBlock, ControlLabel} from 'react-bootstrap';
+import { browserHistory } from 'react-router';
 /* eslint-disable no-undef */
 class MarkNest extends React.Component {
     constructor(props) {
@@ -47,7 +48,7 @@ class MarkNest extends React.Component {
         let config = {
             method:"POST",
             mode: "cors"
-        }
+        };
 
         if(picture && location) {
             headers.append('Content-Type', 'application/octet-stream');
@@ -61,8 +62,8 @@ class MarkNest extends React.Component {
                 config.headers = headers;
                 fetch(process.env.REACT_APP_API_URL + "nest",config).then(function(response){
                     return response.json();
-                }).then((data) =>{
-                    this.props.navigateHome();
+                }).then(() =>{
+                    browserHistory.push('/');
                 });
             });
         } else if(location) {
@@ -71,8 +72,8 @@ class MarkNest extends React.Component {
             config.headers = headers;
             fetch(process.env.REACT_APP_API_URL + "nest",config).then(function(response){
                 return response.json();
-            }).then((data) => {
-                this.props.navigateHome();
+            }).then(() => {
+                browserHistory.push('/');
             });
         }
     }
@@ -87,7 +88,7 @@ class MarkNest extends React.Component {
                 mapTypeId:google.maps.MapTypeId.ROADMAP,
                 mapTypeControl:false,
                 navigationControlOptions:{style:google.maps.NavigationControlStyle.SMALL}
-            }
+            };
 
             let map = new google.maps.Map(document.getElementById("map"), myOptions);
             new google.maps.Marker({position:latlon,map:map,title:"Nest Location"});
@@ -114,11 +115,6 @@ class MarkNest extends React.Component {
                 <FormGroup>
                     <Col sm={6} smOffset={3}>
                         <Button onClick={() => this.save()} bsStyle="primary" bsSize="large" block>Save</Button>
-                    </Col>
-                </FormGroup>
-                <FormGroup>
-                    <Col sm={6} smOffset={3}>
-                        <Button onClick={() => this.props.navigateHome()} bsStyle="primary" bsSize="large" block>Back</Button>
                     </Col>
                 </FormGroup>
                 <Modal show={this.state.showModal} onHide={() => this.closeModal()}>
