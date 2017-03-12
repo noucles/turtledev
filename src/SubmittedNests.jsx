@@ -20,7 +20,7 @@ class SubmittedNests extends React.Component {
             mode: "cors"
         };
 
-        headers.append('apiKey', 'xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289');
+        headers.append('Authorization', "Basic " + sessionStorage.authHash);
         config.headers = headers;
         fetch(process.env.REACT_APP_API_URL + "Nests/0",config).then((response) => {
             return response.json();
@@ -46,7 +46,7 @@ class SubmittedNests extends React.Component {
             mode:"cors"
         };
 
-        headers.append('apiKey', 'xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289');
+        headers.append('Authorization', 'xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289');
         config.headers = headers;
         fetch(process.env.REACT_APP_API_URL + "Nest/" + nest.nestId, config).then(() => {
            this.getNests();

@@ -43,7 +43,7 @@ class MarkNest extends React.Component {
         let picture = this.state.imageFile;
         let headers = new Headers();
 
-        headers.append('apiKey', 'xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289');
+        headers.append('Authorization', 'Basic ' + sessionStorage.authHash);
 
         let config = {
             method:"POST",

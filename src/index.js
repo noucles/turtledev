@@ -10,10 +10,14 @@ import MarkNest from './MarkNest';
 ReactDOM.render(
     <Router history={browserHistory}>
         <Route path="/" component={App}>
-        </Route>
-        <Route path="/mark" component={MarkNest}>
-        </Route>
-        <Route path="/submitted" component={SubmittedNests}>
+            <Route path="/mark" component={MarkNest} locationTile="Mark Nest">
+            </Route>
+            <Route path="/my_nests" component={SubmittedNests}>
+            </Route>
+            <Route path="/nests" component={SubmittedNests}>
+            </Route>
+            <Route path="/users" component={SubmittedNests}>
+            </Route>
         </Route>
     </Router>,
   document.getElementById('root')

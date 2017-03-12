@@ -1,36 +1,51 @@
 import React from 'react';
 import {Grid, Row, Col, Panel, Form, FormGroup, Button} from 'react-bootstrap';
-import MarkNest from './MarkNest';
-import SubmittedNests from './SubmittedNests';
 import { browserHistory } from 'react-router';
 
 class Home extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {location:"Home"};
-    }
-    navigate(location) {
-        this.setState({location: location});
-    }
     render() {
         let locationComponent;
-
-
-        if(this.state.location === 'MarkNest'){
-            locationComponent = <MarkNest navigateHome={() => this.navigate("Home")}/>;
-        } else if(this.state.location === 'SubmittedNests') {
-            locationComponent =  <SubmittedNests navigateHome={() => this.navigate("Home")} />;
+        let isAdmin = this.props.params.isAdmin;
+        if (isAdmin){
+            locationComponent = (
+                <Form horizontal>
+                    <Col sm={6}>
+                        <FormGroup>
+                            <Col sm={12}>
+                                <Button onClick={() => browserHistory.push('/mark')} bsStyle="primary" bsSize="large" block >Mark Nest</Button>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup>
+                            <Col sm={12}>
+                                <Button onClick={() => browserHistory.push('/my_nests')} bsStyle="primary" bsSize="large" block>My Nests</Button>
+                            </Col>
+                        </FormGroup>
+                    </Col>
+                    <Col sm={6}>
+                        <FormGroup>
+                            <Col sm={12}>
+                                <Button onClick={() => browserHistory.push('/nests')} bsStyle="primary" bsSize="large" block >Nests</Button>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup>
+                            <Col sm={12}>
+                                <Button onClick={() => browserHistory.push('/users')} bsStyle="primary" bsSize="large" block>Users</Button>
+                            </Col>
+                        </FormGroup>
+                    </Col>
+                </Form>
+            );
         } else {
             locationComponent = (
                 <Form horizontal>
                     <FormGroup>
                         <Col sm={6} smOffset={3}>
-                            <Button onClick={() => browserHistory.push('/mark')} bsStyle="primary" bsSize="large" block >Mark a Nest</Button>
+                            <Button onClick={() => browserHistory.push('/mark')} bsStyle="primary" bsSize="large" block >Mark Nest</Button>
                         </Col>
                     </FormGroup>
                     <FormGroup>
                         <Col sm={6} smOffset={3}>
-                            <Button onClick={() => browserHistory.push('/submitted')} bsStyle="primary" bsSize="large" block>Submitted Nests</Button>
+                            <Button onClick={() => browserHistory.push('/my_nests')} bsStyle="primary" bsSize="large" block>My Nests</Button>
                         </Col>
                     </FormGroup>
                 </Form>
@@ -41,7 +56,7 @@ class Home extends React.Component {
             <Grid>
                 <Row>
                     <Col sm={8} smOffset={2}>
-                        <Panel header={this.state.location} bsStyle="primary">
+                        <Panel header="Home" bsStyle="primary">
                             {locationComponent}
                         </Panel>
                     </Col>
