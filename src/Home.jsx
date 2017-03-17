@@ -3,6 +3,7 @@ import {Grid, Row, Col, Panel, Form, FormGroup, Button} from 'react-bootstrap';
 import { browserHistory } from 'react-router';
 
 class Home extends React.Component {
+
     render() {
         let locationComponent;
         let isAdmin = this.props.params.isAdmin;

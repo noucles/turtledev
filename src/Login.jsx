@@ -28,6 +28,12 @@ class Login extends React.Component {
         this.setState({password: password});
     }
 
+    handleKeyPress (e) {
+        if (e.key === 'Enter') {
+            this.authenticate();
+        }
+    }
+
     render() {
         return (
             <Grid>
@@ -48,7 +54,7 @@ class Login extends React.Component {
                                         Password
                                     </Col>
                                     <Col md={6}>
-                                        <FormControl type="password" placeholder="Password" onChange={(e)=> this.handlePasswordChange(e)} />
+                                        <FormControl type="password" placeholder="Password" onChange={(e)=> this.handlePasswordChange(e)} onKeyPress={(e) => this.handleKeyPress(e)} />
                                     </Col>
                                 </FormGroup>
                                 <FormGroup>

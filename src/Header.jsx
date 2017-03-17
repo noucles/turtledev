@@ -12,6 +12,7 @@ class Header extends React.Component {
                         Hello, {this.props.userName}
                     </Navbar.Text >
                     <Navbar.Text>
+                        {this.props.pageLocation}
                     </Navbar.Text >
                     <Navbar.Toggle />
                 </Navbar.Header>

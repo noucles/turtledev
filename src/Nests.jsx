@@ -1,6 +1,6 @@
 import React from 'react';
-import ShowNest from './ShowNest';
-import {Button, ListGroup, ListGroupItem} from 'react-bootstrap';
+import {ListGroup, ListGroupItem} from 'react-bootstrap';
+import Nest from './Nest';
 /* eslint-disable no-undef */
 
 class SubmittedNests extends React.Component {
@@ -10,7 +10,7 @@ class SubmittedNests extends React.Component {
     }
 
     componentDidMount() {
-       this.getNests();
+        this.getNests();
     }
 
     getNests() {
@@ -29,13 +29,11 @@ class SubmittedNests extends React.Component {
         });
     }
 
-    showNest(event, nest) {
-        if(event.target.tagName !== "BUTTON"){
-            this.setState({showModal:true,selectedNest:nest});
-        }
+    showNest(nest) {
+        this.setState({showModal: true, selectedNest:nest});
     }
 
-    closeShowNest() {
+    closeNest() {
         this.setState({showModal: false});
     }
 
@@ -49,16 +47,15 @@ class SubmittedNests extends React.Component {
         headers.append('Authorization', "Basic " + sessionStorage.authHash);
         config.headers = headers;
         fetch(process.env.REACT_APP_API_URL + "Nest/" + nest.nestId, config).then(() => {
-           this.getNests();
+            this.getNests();
         });
     }
 
     render() {
         if(this.state.list) {
             const list = this.state.list.map((nest) =>
-                <ListGroupItem href="#" onClick={(event) => this.showNest(event, nest)} key={nest.nestId}>
+                <ListGroupItem onClick={() => this.showNest(nest)} key={nest.nestId}>
                     {nest.nestId}
-                    <Button bsSize="xsmall" bsStyle="danger" className={"pull-right"} onClick={()=> this.deleteNest(nest)}>Delete</Button>
                 </ListGroupItem>
             );
 
@@ -68,7 +65,7 @@ class SubmittedNests extends React.Component {
                         {list}
                     </ListGroup>
                     {this.state.showModal &&
-                        <ShowNest nest={this.state.selectedNest} closeShowNest={() => this.closeShowNest()}/>
+                    <Nest nest={this.state.selectedNest} closeNest={() => this.closeNest()}/>
                     }
                 </div>
             );
