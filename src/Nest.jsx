@@ -24,25 +24,6 @@ class Nest extends React.Component {
         this.setState({longitude: longitude});
     }
 
-    componentDidMount() {
-        let headers = new Headers();
-        let config = {
-            method:"GET",
-            mode: "cors"
-        };
-
-        headers.append('Authorization', "Basic " + sessionStorage.authHash);
-        config.headers = headers;
-        fetch(process.env.REACT_APP_API_URL + "Nest/" + this.props.nest.nestId, config).then((response) => {
-            return response.json();
-        }).then((data) =>{
-            if(data.photos.length) {
-                let imageUrl = process.env.REACT_APP_API_URL + "photo/" + data.photos[0];
-                this.setState({imageUrl:imageUrl});
-            }
-        });
-    }
-
     save() {
 
         let location = {latitude:this.state.latitude, longitude: this.state.longitude};
@@ -111,8 +92,8 @@ class Nest extends React.Component {
                                 Track Patterns
                             </Col>
                             <Col sm={6}>
-                                {this.state.imageUrl &&
-                                <Thumbnail src={this.state.imageUrl} />
+                                {this.props.nest.photos.length &&
+                                <Thumbnail src={process.env.REACT_APP_API_URL + "photo/" + this.props.nest.photos[0]} />
                                 }
                             </Col>
                         </FormGroup>

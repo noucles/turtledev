@@ -58,7 +58,7 @@ class MarkNest extends React.Component {
                 return response.json();
             }).then((data) =>{
                 headers.append('Content-Type', 'application/json');
-                config.body = JSON.stringify({location:location, photos:[data.photoId]});
+                config.body = JSON.stringify({location:location, photos:[data.photoId], family:"default"});
                 config.headers = headers;
                 fetch(process.env.REACT_APP_API_URL + "nest",config).then(function(response){
                     return response.json();
@@ -68,7 +68,7 @@ class MarkNest extends React.Component {
             });
         } else if(location) {
             headers.append('Content-Type', 'application/json');
-            config.body = JSON.stringify({location:location});
+            config.body = JSON.stringify({location:location, family:"default"});
             config.headers = headers;
             fetch(process.env.REACT_APP_API_URL + "nest",config).then(function(response){
                 return response.json();

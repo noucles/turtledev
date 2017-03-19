@@ -20,6 +20,7 @@ class App extends Component {
     }
     onAuthenticate(params) {
         sessionStorage.authHash = params.authHash;
+        sessionStorage.username = params.userName;
         this.setState({authenticated: true, params: params});
     }
     onLogOut() {

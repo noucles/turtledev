@@ -1,50 +1,45 @@
 import React from 'react';
-import {Button, Modal, Thumbnail, ControlLabel, FormControl, Form, FormGroup, Col} from 'react-bootstrap';
+import {Button, Modal, ControlLabel, FormControl, Form, FormGroup, Col} from 'react-bootstrap';
 /* eslint-disable no-undef */
 class User extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {longitude: this.props.nest.location.longitude, latitude: this.props.nest.location.latitude};
+        if(this.props.user) {
+            this.state = {
+                firstName: this.props.user.firstName,
+                lastName: this.props.user.lastName,
+                username: this.props.user.username,
+                password: ""
+            };
+        } else {
+            this.state = {
+                firstName: "",
+                lastName: "",
+                username: "",
+                password: ""
+            };
+        }
     }
 
     closeModal(){
-        this.props.closeNest();
+        this.props.closeUser();
     }
 
-    changeLatitudeHandler(e) {
-        let latitude = e.target.value;
-
-        this.setState({latitude: latitude});
-    }
-
-    changeLongitudeHandler(e) {
-        let longitude = e.target.value;
-
-        this.setState({longitude: longitude});
-    }
-
-    componentDidMount() {
-        let headers = new Headers();
-        let config = {
-            method:"GET",
-            mode: "cors"
-        };
-
-        headers.append('Authorization', "Basic " + sessionStorage.authHash);
-        config.headers = headers;
-        fetch(process.env.REACT_APP_API_URL + "Nest/" + this.props.nest.nestId, config).then((response) => {
-            return response.json();
-        }).then((data) =>{
-            if(data.photos.length) {
-                let imageUrl = process.env.REACT_APP_API_URL + "photo/" + data.photos[0];
-                this.setState({imageUrl:imageUrl});
-            }
-        });
+    handleUserInfoChange(userInfo) {
+        this.setState(userInfo);
     }
 
     save() {
+        let user = {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            username: this.state.username,
+            password: this.state.password
+        };
 
+        this.props.handleSave(user);
+        this.closeModal();
+/*
         let location = {latitude:this.state.latitude, longitude: this.state.longitude};
         let headers = new Headers();
 
@@ -62,13 +57,16 @@ class User extends React.Component {
             fetch(process.env.REACT_APP_API_URL + "nest/" + this.props.nest.nestId, config).then(function(response){
                 return response.json();
             }).then(() => {
-                this.props.closeNest();
+                this.props.closeUser();
             });
-        }
+        }*/
     }
 
     render() {
-        let nestId = this.props.nest.nestId;
+        const firstName = this.state.firstName;
+        const lastName = this.state.lastName;
+        const username = this.state.username;
+        const password = this.state.password;
 
         return(
             <Modal show={true} onHide={() => this.closeModal()}>
@@ -79,41 +77,34 @@ class User extends React.Component {
                     <Form horizontal>
                         <FormGroup>
                             <Col componentClass={ControlLabel} sm={4}>
-                                NestID
+                                First Name
                             </Col>
                             <Col sm={6}>
-                                <FormControl type="text" placeholder="NestID" value={nestId} disabled/>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup>
-                            <Col componentClass={ControlLabel} sm={4}  smOffset={4}>
-                                GPS Coordinates
+                                <FormControl type="text" placeholder="First Name" value={firstName} onChange={(e) => this.handleUserInfoChange({'firstName': e.target.value})} />
                             </Col>
                         </FormGroup>
                         <FormGroup>
                             <Col componentClass={ControlLabel} sm={4}>
-                                Latitude
+                                Last Name
                             </Col>
                             <Col sm={6}>
-                                <FormControl type="text" placeholder="Latitude" value={this.state.latitude} onChange={(e) => this.changeLatitudeHandler(e)} />
+                                <FormControl type="text" placeholder="Last Name" value={lastName} onChange={(e) => this.handleUserInfoChange({'lastName': e.target.value})} />
                             </Col>
                         </FormGroup>
                         <FormGroup>
                             <Col componentClass={ControlLabel} sm={4}>
-                                Longitude
+                                Username
                             </Col>
                             <Col sm={6}>
-                                <FormControl type="text" placeholder="Longitude" value={this.state.longitude} onChange={(e) => this.changeLongitudeHandler(e)} />
+                                <FormControl type="text" placeholder="Username" value={username} onChange={(e) => this.handleUserInfoChange({'username':e.target.value})} />
                             </Col>
                         </FormGroup>
                         <FormGroup>
                             <Col componentClass={ControlLabel} sm={4}>
-                                Track Patterns
+                                Password
                             </Col>
                             <Col sm={6}>
-                                {this.state.imageUrl &&
-                                <Thumbnail src={this.state.imageUrl} />
-                                }
+                                <FormControl type="password" placeholder="Password" value={password} onChange={(e) => this.handleUserInfoChange({'password':e.target.value})} />
                             </Col>
                         </FormGroup>
                     </Form>

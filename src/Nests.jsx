@@ -22,7 +22,7 @@ class SubmittedNests extends React.Component {
 
         headers.append('Authorization', "Basic " + sessionStorage.authHash);
         config.headers = headers;
-        fetch(process.env.REACT_APP_API_URL + "Nests/0",config).then((response) => {
+        fetch(process.env.REACT_APP_API_URL + "Nests/default",config).then((response) => {
             return response.json();
         }).then((data) =>{
             this.setState({list:data.nests});

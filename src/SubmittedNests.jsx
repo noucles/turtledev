@@ -16,13 +16,14 @@ class SubmittedNests extends React.Component {
     getNests() {
         let headers = new Headers();
         let config = {
-            method:"GET",
+            method:"POST",
             mode: "cors"
         };
 
         headers.append('Authorization', "Basic " + sessionStorage.authHash);
         config.headers = headers;
-        fetch(process.env.REACT_APP_API_URL + "Nests/0",config).then((response) => {
+        config.body = JSON.stringify({username:sessionStorage.username});
+        fetch(process.env.REACT_APP_API_URL + "Nests/",config).then((response) => {
             return response.json();
         }).then((data) =>{
             this.setState({list:data.nests});

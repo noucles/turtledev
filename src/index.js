@@ -7,6 +7,7 @@ import { Router, Route, browserHistory} from 'react-router';
 import SubmittedNests from './SubmittedNests';
 import Nests from './Nests';
 import MarkNest from './MarkNest';
+import Users from './Users';
 
 ReactDOM.render(
     <Router history={browserHistory}>
@@ -17,7 +18,7 @@ ReactDOM.render(
             </Route>
             <Route path="/nests" component={Nests}>
             </Route>
-            <Route path="/users" component={SubmittedNests}>
+            <Route path="/users" component={Users}>
             </Route>
         </Route>
     </Router>,
