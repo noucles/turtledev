@@ -1,5 +1,5 @@
 import React from 'react';
-import {ListGroup, ListGroupItem} from 'react-bootstrap';
+import {ListGroup, ListGroupItem, Button, ButtonToolbar, Panel} from 'react-bootstrap';
 import Nest from './Nest';
 /* eslint-disable no-undef */
 
@@ -37,6 +37,10 @@ class SubmittedNests extends React.Component {
         this.setState({showModal: false});
     }
 
+    exportNests() {
+
+    }
+
     deleteNest(nest) {
         let headers = new Headers();
         let config = {
@@ -52,6 +56,7 @@ class SubmittedNests extends React.Component {
     }
 
     render() {
+        let content;
         if(this.state.list) {
             const list = this.state.list.map((nest) =>
                 <ListGroupItem onClick={() => this.showNest(nest)} key={nest.nestId}>
@@ -59,8 +64,11 @@ class SubmittedNests extends React.Component {
                 </ListGroupItem>
             );
 
-            return(
+            content = (
                 <div>
+                    <ButtonToolbar>
+                        <Button onClick={() => this.exportNests()}>Export</Button>
+                    </ButtonToolbar>
                     <ListGroup>
                         {list}
                     </ListGroup>
@@ -71,8 +79,14 @@ class SubmittedNests extends React.Component {
             );
         }
         else {
-            return <div>Loading....</div>
+            content = <div>Loading....</div>
         }
+
+        return (
+            <Panel>
+                {content}
+            </Panel>
+        );
     }
 }
 

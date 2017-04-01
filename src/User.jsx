@@ -9,14 +9,16 @@ class User extends React.Component {
                 firstName: this.props.user.firstName,
                 lastName: this.props.user.lastName,
                 username: this.props.user.username,
-                password: ""
+                password: "",
+                role: this.props.user.role
             };
         } else {
             this.state = {
                 firstName: "",
                 lastName: "",
                 username: "",
-                password: ""
+                password: "",
+                role: 5
             };
         }
     }
@@ -34,8 +36,30 @@ class User extends React.Component {
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             username: this.state.username,
-            password: this.state.password
+            password: this.state.password,
+            role: this.state.role
         };
+        let existingUser = this.props.user;
+
+        let headers = new Headers();
+        let config = {
+            mode: "cors"
+        };
+
+        if(existingUser) {
+            config.method = "PUT";
+        } else {
+            config.method = "POST";
+        }
+
+        headers.append('Authorization', "Basic " + sessionStorage.authHash);
+        config.headers = headers;
+        config.body = JSON.stringify(user);
+        fetch(process.env.REACT_APP_API_URL + "User/" + (existingUser?existingUser.username:""),config).then((response) => {
+            return response.json();
+        }).then((data) =>{
+            console.log(data);
+        });
 
         this.props.handleSave(user);
         this.closeModal();
@@ -67,6 +91,7 @@ class User extends React.Component {
         const lastName = this.state.lastName;
         const username = this.state.username;
         const password = this.state.password;
+        const role = this.state.role;
 
         return(
             <Modal show={true} onHide={() => this.closeModal()}>
@@ -96,7 +121,7 @@ class User extends React.Component {
                                 Username
                             </Col>
                             <Col sm={6}>
-                                <FormControl type="text" placeholder="Username" value={username} onChange={(e) => this.handleUserInfoChange({'username':e.target.value})} />
+                                <FormControl type="text" placeholder="Username" value={username} onChange={(e) => this.handleUserInfoChange({'username':e.target.value})} disabled={!!this.props.user}/>
                             </Col>
                         </FormGroup>
                         <FormGroup>
@@ -105,6 +130,17 @@ class User extends React.Component {
                             </Col>
                             <Col sm={6}>
                                 <FormControl type="password" placeholder="Password" value={password} onChange={(e) => this.handleUserInfoChange({'password':e.target.value})} />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup>
+                            <Col componentClass={ControlLabel} sm={4}>
+                                Role
+                            </Col>
+                            <Col sm={6}>
+                                <FormControl componentClass="select" placeholder="Role" value={role} onChange={(e) => this.handleUserInfoChange({'role':parseInt(e.target.value, 10)})}>
+                                    <option value="5">Staff</option>
+                                    <option value="99">Admin</option>
+                                </FormControl>
                             </Col>
                         </FormGroup>
                     </Form>

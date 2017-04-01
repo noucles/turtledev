@@ -6,7 +6,7 @@ class Home extends React.Component {
 
     render() {
         let locationComponent;
-        let isAdmin = this.props.params.isAdmin;
+        let isAdmin = sessionStorage.isAdmin == "true";
         if (isAdmin){
             locationComponent = (
                 <Form horizontal>

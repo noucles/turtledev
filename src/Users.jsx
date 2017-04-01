@@ -30,9 +30,9 @@ class Users extends React.Component {
         });*/
 
         let fakeUsers = [
-            {userId:1, username:"dude", firstName:"Dude", lastName:"Maximus"},
-            {userId:2, username:"dude2", firstName:"Dude2", lastName:"Maximus"},
-            {userId:3, username:"dude3", firstName:"Dude3", lastName:"Maximus"}
+            {userId:1, username:"dude", firstName:"Dude", lastName:"Maximus", role: 5},
+            {userId:2, username:"dude2", firstName:"Dude2", lastName:"Maximus", role: 5},
+            {userId:3, username:"dude3", firstName:"Dude3", lastName:"Maximus", role: 99}
         ];
 
         this.setState({list:fakeUsers});
@@ -59,8 +59,6 @@ class Users extends React.Component {
         } else {
             config.method = "POST";
         }
-
-
 
         headers.append('Authorization', "Basic " + sessionStorage.authHash);
         config.headers = headers;
@@ -99,6 +97,7 @@ class Users extends React.Component {
                     <td onClick={() => this.showUser(user, i)}>{user.firstName}</td>
                     <td onClick={() => this.showUser(user, i)}>{user.lastName}</td>
                     <td onClick={() => this.showUser(user, i)}>{user.username}</td>
+                    <td onClick={() => this.showUser(user, i)}>{user.role===99?"admin":"staff"}</td>
                     <td><Button onClick={(e) => this.deleteUser(i)}>Delete</Button></td>
                 </tr>
             );
