@@ -28,17 +28,26 @@ class Login extends React.Component {
 
         headers.append('Authorization', "Basic " + authHash);
         config.headers = headers;
-        fetch(process.env.REACT_APP_API_URL + "Nests/authenticate",config).then((response) => {
-            return response.json();
+        fetch(process.env.REACT_APP_API_URL + "auth?username=" + userName + "&password=" + password,config).then((response) => {
+            if(response.ok) {
+                return response.json();
+            }
+
+            throw new Error('Authentication failed: ' + response.status + " " + response.statusText);
         }).then((data) =>{
-            if(data.nests) {
+            if(data.role) {
                 sessionStorage.authHash = authHash;
                 sessionStorage.username = userName;
-                sessionStorage.isAdmin = userName ==="admin";
+                sessionStorage.isAdmin = data.role >= 99;
+                sessionStorage.role = data.role;
                 browserHistory.replace("/");
             } else {
-                this.setState({authFailed:true});
+                throw new Error('Authentication failed: Role information missing');
             }
+
+        }).catch((error) => {
+            console.log(error.message);
+            this.setState({authFailed:true});
         });
     }
 

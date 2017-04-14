@@ -1,7 +1,13 @@
 import React from 'react';
-import {ButtonToolbar, Button, Panel, Table} from 'react-bootstrap';
+import {ButtonToolbar, Button, Panel, Table, ProgressBar} from 'react-bootstrap';
 import User from './User';
 /* eslint-disable no-undef */
+
+const roles = {
+    "5": "Staff",
+    "99": "Admin",
+    "100":"Root"
+};
 
 class Users extends React.Component {
     constructor(props) {
@@ -14,7 +20,7 @@ class Users extends React.Component {
     }
 
     getUsers() {
-        /*
+        this.setState({list: null});
         let headers = new Headers();
         let config = {
             method:"GET",
@@ -23,19 +29,11 @@ class Users extends React.Component {
 
         headers.append('Authorization', "Basic " + sessionStorage.authHash);
         config.headers = headers;
-        fetch(process.env.REACT_APP_API_URL + "Users/0",config).then((response) => {
+        fetch(process.env.REACT_APP_API_URL + "user",config).then((response) => {
             return response.json();
         }).then((data) =>{
-            this.setState({list:data.nests});
-        });*/
-
-        let fakeUsers = [
-            {userId:1, username:"dude", firstName:"Dude", lastName:"Maximus", role: 5},
-            {userId:2, username:"dude2", firstName:"Dude2", lastName:"Maximus", role: 5},
-            {userId:3, username:"dude3", firstName:"Dude3", lastName:"Maximus", role: 99}
-        ];
-
-        this.setState({list:fakeUsers});
+            this.setState({list:data});
+        });
     }
 
     showUser(user, index) {
@@ -46,89 +44,74 @@ class Users extends React.Component {
         this.setState({showModal: false});
     }
 
-    saveUser(user) {
-        let existingUser = this.state.selectedUser;
-
+    deleteUser(user) {
+        this.setState({list: null});
         let headers = new Headers();
         let config = {
-            mode: "cors"
-        };
-
-        if(existingUser) {
-            config.method = "PUT";
-        } else {
-            config.method = "POST";
-        }
-
-        headers.append('Authorization', "Basic " + sessionStorage.authHash);
-        config.headers = headers;
-        config.body = JSON.stringify(user);
-        fetch(process.env.REACT_APP_API_URL + "User/" + (existingUser?existingUser.username:""),config).then((response) => {
-            return response.json();
-        }).then((data) =>{
-         console.log(data);
-        });
-    }
-
-    deleteUser(index) {
-        let list = this.state.list;
-        list.splice(index, 1);
-
-        this.setState({list: list});
-
-        /*
-        let headers = new Headers();
-        let config = {
-            method:"DELETE",
+            method:"PUT",
             mode:"cors"
         };
 
         headers.append('Authorization', "Basic " + sessionStorage.authHash);
         config.headers = headers;
-        fetch(process.env.REACT_APP_API_URL + "users/" + user.userId, config).then(() => {
+        config.body = JSON.stringify({role: 0});
+        fetch(process.env.REACT_APP_API_URL + "user/" + user.username, config).then(() => {
             this.getUsers();
-        });*/
+        });
     }
 
     render() {
+        let loggedInUserRole = parseInt(sessionStorage.role, 10);
+        let content = null;
         if(this.state.list) {
-            const list = this.state.list.map((user, i) =>
-                <tr key={user.userId} style={{cursor: "pointer"}}>
-                    <td onClick={() => this.showUser(user, i)}>{user.firstName}</td>
-                    <td onClick={() => this.showUser(user, i)}>{user.lastName}</td>
-                    <td onClick={() => this.showUser(user, i)}>{user.username}</td>
-                    <td onClick={() => this.showUser(user, i)}>{user.role===99?"admin":"staff"}</td>
-                    <td><Button onClick={(e) => this.deleteUser(i)}>Delete</Button></td>
-                </tr>
-            );
+            content =(
+                <Table responsive striped hover>
+                    <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Username</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {
+                        this.state.list.map((user, i) => {
+                            let row = null;
+                            if (user.role !== 100 || loggedInUserRole === 100) {
+                                row = (<tr key={user.userId} style={{cursor: "pointer"}}>
+                                    <td onClick={() => this.showUser(user, i)}>{user.firstName}</td>
+                                    <td onClick={() => this.showUser(user, i)}>{user.lastName}</td>
+                                    <td onClick={() => this.showUser(user, i)}>{user.username}</td>
+                                    <td onClick={() => this.showUser(user, i)}>{roles[user.role]}</td>
+                                    <td><Button onClick={(e) => this.deleteUser(user)}
+                                                disabled={sessionStorage.username === user.username || loggedInUserRole <= user.role}>Delete</Button>
+                                    </td>
+                                </tr>);
+                            }
 
-            return(
-                <Panel>
-                    <ButtonToolbar>
-                        <Button onClick={() => this.showUser()}>Add</Button>
-                    </ButtonToolbar>
-                    <Table responsive striped hover>
-                        <thead>
-                            <tr>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {list}
-                        </tbody>
-                    </Table>
-                    {this.state.showModal &&
-                    <User user={this.state.selectedUser} closeUser={() => this.closeUser()} handleSave={(user) => this.saveUser(user)}/>
+                            return row;
+                        })
                     }
-                </Panel>
+                    </tbody>
+                </Table>
             );
         }
         else {
-            return <div>Loading....</div>
+            content =  <ProgressBar active now={100} />;
         }
+
+        return(
+            <Panel>
+                <ButtonToolbar>
+                    <Button onClick={() => this.showUser()}>Add</Button>
+                </ButtonToolbar>
+                {content}
+                {this.state.showModal &&
+                <User user={this.state.selectedUser} closeUser={() => this.closeUser()} handleSave={() => this.getUsers()}/>
+                }
+            </Panel>
+        );
     }
 }
 

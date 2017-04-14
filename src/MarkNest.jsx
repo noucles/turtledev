@@ -1,11 +1,11 @@
 import React from 'react';
-import {Col, Form, FormGroup, Button, Modal, FormControl, HelpBlock, ControlLabel} from 'react-bootstrap';
+import {Col, Form, FormGroup, Button, Modal, FormControl, HelpBlock, ControlLabel, ProgressBar} from 'react-bootstrap';
 import { browserHistory } from 'react-router';
 /* eslint-disable no-undef */
 class MarkNest extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showModal: false, location:null, imageFile: null};
+        this.state = {showModal: false, location:null, imageFile: null, saving: false};
     }
 
     closeModal(){
@@ -39,6 +39,7 @@ class MarkNest extends React.Component {
     }
 
     save() {
+        this.setState({saving:true});
         let location = this.state.location;
         let picture = this.state.imageFile;
         let headers = new Headers();
@@ -63,6 +64,7 @@ class MarkNest extends React.Component {
                 fetch(process.env.REACT_APP_API_URL + "nest",config).then(function(response){
                     return response.json();
                 }).then(() =>{
+                    this.setState({saving:false});
                     browserHistory.push('/');
                 });
             });
@@ -73,6 +75,7 @@ class MarkNest extends React.Component {
             fetch(process.env.REACT_APP_API_URL + "nest",config).then(function(response){
                 return response.json();
             }).then(() => {
+                this.setState({saving:false});
                 browserHistory.push('/');
             });
         }
@@ -130,6 +133,14 @@ class MarkNest extends React.Component {
                         <Button onClick={() => this.confirmLocation()}>Confirm</Button>
                         <Button onClick={() => this.cancelLocation()}>Cancel</Button>
                     </Modal.Footer>
+                </Modal>
+                <Modal show={this.state.saving} onHide={() => this.closeModal()}>
+                    <Modal.Header>
+                        <Modal.Title>Saving Nest...</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <ProgressBar active now={100} />
+                    </Modal.Body>
                 </Modal>
             </Form>
         );

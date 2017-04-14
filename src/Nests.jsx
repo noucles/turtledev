@@ -1,5 +1,5 @@
 import React from 'react';
-import {ListGroup, ListGroupItem, Button, ButtonToolbar, Panel} from 'react-bootstrap';
+import {ListGroup, ListGroupItem, Button, ButtonToolbar, Panel, ProgressBar} from 'react-bootstrap';
 import Nest from './Nest';
 /* eslint-disable no-undef */
 
@@ -38,6 +38,24 @@ class SubmittedNests extends React.Component {
     }
 
     exportNests() {
+        let headers = new Headers();
+        let config = {
+            method:"GET",
+            mode: "cors"
+        };
+
+        headers.append('Authorization', "Basic " + sessionStorage.authHash);
+        config.headers = headers;
+        fetch(process.env.REACT_APP_API_URL + "csv",config).then((response) => {
+            return response.blob();
+        }).then((blob) => {
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = "export.csv";
+            a.click();
+        });
+
 
     }
 
@@ -79,7 +97,7 @@ class SubmittedNests extends React.Component {
             );
         }
         else {
-            content = <div>Loading....</div>
+            content = <ProgressBar active now={100} />;
         }
 
         return (

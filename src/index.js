@@ -13,7 +13,7 @@ import Home from './Home';
 import EnsureLoggedInContainer from './EnsureLoggedInContainer';
 
 function requireAdmin(nextState, replace) {
-    if (!(sessionStorage.isAdmin == "true")) {
+    if (!(sessionStorage.isAdmin === "true")) {
         replace({
             pathname: '/'
         })
