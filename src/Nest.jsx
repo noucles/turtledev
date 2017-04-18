@@ -5,7 +5,12 @@ class Nest extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {longitude: this.props.nest.location.longitude, latitude: this.props.nest.location.latitude};
+        this.state = {
+            longitude: this.props.nest.location.longitude,
+            latitude: this.props.nest.location.latitude,
+            notes: this.props.nest.notes,
+            family: this.props.nest.family
+        };
     }
 
     closeModal(){
@@ -24,10 +29,22 @@ class Nest extends React.Component {
         this.setState({longitude: longitude});
     }
 
+    changeNotesHandler(e) {
+        let notes = e.target.value;
+        this.setState({notes: notes});
+    }
+
+    changeFamilyHandler(e) {
+        let family = e.target.value;
+        this.setState({family:family});
+    }
+
     save() {
 
         let location = {latitude:this.state.latitude, longitude: this.state.longitude};
         let headers = new Headers();
+        let notes = this.state.notes;
+        let family = this.state.family;
 
         headers.append('Authorization', 'Basic ' + sessionStorage.authHash);
 
@@ -38,7 +55,7 @@ class Nest extends React.Component {
 
         if(location) {
             headers.append('Content-Type', 'application/json');
-            config.body = JSON.stringify({location:location});
+            config.body = JSON.stringify({location:location, notes: notes, family: family});
             config.headers = headers;
             fetch(process.env.REACT_APP_API_URL + "nest/" + this.props.nest.nestId, config).then(function(response){
                 return response.json();
@@ -50,6 +67,9 @@ class Nest extends React.Component {
 
     render() {
         let nestId = this.props.nest.nestId;
+        let notes = this.state.notes;
+        let family = this.state.family;
+
 
         return(
             <Modal show={true} onHide={() => this.closeModal()}>
@@ -64,6 +84,26 @@ class Nest extends React.Component {
                             </Col>
                             <Col sm={6}>
                                 <FormControl type="text" placeholder="NestID" value={nestId} disabled/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup>
+                            <Col componentClass={ControlLabel} sm={4}>
+                                Notes
+                            </Col>
+                            <Col sm={6}>
+                                <FormControl componentClass="textarea" placeholder="Notes" value={notes} onChange={(e) => this.changeNotesHandler(e)} />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup>
+                            <Col componentClass={ControlLabel} sm={4}>
+                                Family
+                            </Col>
+                            <Col sm={6}>
+                                <FormControl componentClass="select" placeholder="Role" value={family} onChange={(e) => this.changeFamilyHandler(e)}>
+                                    <option value="general">General</option>
+                                    <option value="miami">Miami</option>
+                                    <option value="ftlauderdale">Fort Lauderdale</option>
+                                </FormControl>
                             </Col>
                         </FormGroup>
                         <FormGroup>

@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router';
 class MarkNest extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showModal: false, location:null, imageFile: null, saving: false};
+        this.state = {showModal: false, location:null, imageFile: null, saving: false, notes: "", family: "general"};
     }
 
     closeModal(){
@@ -25,8 +25,16 @@ class MarkNest extends React.Component {
         this.setState({showModal: true});
     }
 
+    handleNote(value) {
+        this.setState({notes:value});
+    }
+
     handleFile(file){
        this.setState({imageFile:file});
+    }
+
+    handleFamilyChange(family) {
+        this.setState({family: family});
     }
 
     getUserLocations() {
@@ -42,6 +50,8 @@ class MarkNest extends React.Component {
         this.setState({saving:true});
         let location = this.state.location;
         let picture = this.state.imageFile;
+        let notes = this.state.notes;
+        let family = this.state.family;
         let headers = new Headers();
 
         headers.append('Authorization', 'Basic ' + sessionStorage.authHash);
@@ -59,7 +69,7 @@ class MarkNest extends React.Component {
                 return response.json();
             }).then((data) =>{
                 headers.append('Content-Type', 'application/json');
-                config.body = JSON.stringify({location:location, photos:[data.photoId], family:"default"});
+                config.body = JSON.stringify({location:location, photos:[data.photoId], family:family, notes: notes});
                 config.headers = headers;
                 fetch(process.env.REACT_APP_API_URL + "nest",config).then(function(response){
                     return response.json();
@@ -70,7 +80,7 @@ class MarkNest extends React.Component {
             });
         } else if(location) {
             headers.append('Content-Type', 'application/json');
-            config.body = JSON.stringify({location:location, family:"default"});
+            config.body = JSON.stringify({location:location, family:family, notes: notes});
             config.headers = headers;
             fetch(process.env.REACT_APP_API_URL + "nest",config).then(function(response){
                 return response.json();
@@ -99,6 +109,9 @@ class MarkNest extends React.Component {
     }
 
     render() {
+        let notes = this.state.notes;
+        let family = this.state.family;
+
         return(
             <Form horizontal>
                 <FormGroup>
@@ -113,6 +126,26 @@ class MarkNest extends React.Component {
                     <Col sm={6}>
                         <FormControl type="file" onChange={(e) => this.handleFile(e.target.files[0])} />
                         <HelpBlock>Upload track pattern picture</HelpBlock>
+                    </Col>
+                </FormGroup>
+                <FormGroup>
+                    <Col componentClass={ControlLabel} sm={4}>
+                        Notes
+                    </Col>
+                    <Col sm={6}>
+                        <FormControl componentClass="textarea" value={notes} onChange={(e) => this.handleNote(e.target.value)} />
+                    </Col>
+                </FormGroup>
+                <FormGroup>
+                    <Col componentClass={ControlLabel} sm={4}>
+                        Family
+                    </Col>
+                    <Col sm={6}>
+                        <FormControl componentClass="select" placeholder="Role" value={family} onChange={(e) => this.handleFamilyChange(e.target.value)}>
+                            <option value="general">General</option>
+                            <option value="miami">Miami</option>
+                            <option value="ftlauderdale">Fort Lauderdale</option>
+                        </FormControl>
                     </Col>
                 </FormGroup>
                 <FormGroup>

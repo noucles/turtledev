@@ -1,12 +1,18 @@
 import React from 'react';
-import {ListGroup, ListGroupItem, Button, ButtonToolbar, Panel, ProgressBar} from 'react-bootstrap';
+import {ListGroup, ListGroupItem, Button, Panel, ProgressBar, FormGroup, FormControl, Form, Col, ControlLabel} from 'react-bootstrap';
 import Nest from './Nest';
 /* eslint-disable no-undef */
 
 class SubmittedNests extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {list:null, showModal:false, selectedNest:null};
+        this.state = {
+            list:null,
+            showModal:false,
+            selectedNest:null,
+            family: "general",
+            exporting: false
+        };
     }
 
     componentDidMount() {
@@ -14,6 +20,7 @@ class SubmittedNests extends React.Component {
     }
 
     getNests() {
+        let family = this.state.family;
         let headers = new Headers();
         let config = {
             method:"GET",
@@ -22,11 +29,16 @@ class SubmittedNests extends React.Component {
 
         headers.append('Authorization', "Basic " + sessionStorage.authHash);
         config.headers = headers;
-        fetch(process.env.REACT_APP_API_URL + "Nests/default",config).then((response) => {
+        fetch(process.env.REACT_APP_API_URL + "Nests/" + family,config).then((response) => {
             return response.json();
         }).then((data) =>{
             this.setState({list:data.nests});
         });
+    }
+
+    changeFamilyHandler(e) {
+        let family = e.target.value;
+        this.setState({family: family});
     }
 
     showNest(nest) {
@@ -35,6 +47,7 @@ class SubmittedNests extends React.Component {
 
     closeNest() {
         this.setState({showModal: false});
+        this.getNests();
     }
 
     exportNests() {
@@ -55,8 +68,6 @@ class SubmittedNests extends React.Component {
             a.download = "export.csv";
             a.click();
         });
-
-
     }
 
     deleteNest(nest) {
@@ -73,8 +84,15 @@ class SubmittedNests extends React.Component {
         });
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if(this.state.family !== prevState.family) {
+            this.getNests();
+        }
+    }
+
     render() {
         let content;
+        let family = this.state.family;
         if(this.state.list) {
             const list = this.state.list.map((nest) =>
                 <ListGroupItem onClick={() => this.showNest(nest)} key={nest.nestId}>
@@ -84,9 +102,22 @@ class SubmittedNests extends React.Component {
 
             content = (
                 <div>
-                    <ButtonToolbar>
+                    <Form inline>
+                        <FormGroup>
+                            <Col componentClass={ControlLabel} sm={4}>
+                                Family
+                            </Col>
+                            <Col sm={6}>
+                                <FormControl componentClass="select" placeholder="Role" value={family} onChange={(e) => this.changeFamilyHandler(e)}>
+                                    <option value="general">General</option>
+                                    <option value="miami">Miami</option>
+                                    <option value="ftlauderdale">Fort Lauderdale</option>
+                                </FormControl>
+                            </Col>
+                        </FormGroup>
+                        {' '}
                         <Button onClick={() => this.exportNests()}>Export</Button>
-                    </ButtonToolbar>
+                    </Form>
                     <ListGroup>
                         {list}
                     </ListGroup>

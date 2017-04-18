@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Modal, ControlLabel, FormControl, Form, FormGroup, Col, ProgressBar} from 'react-bootstrap';
+import {Button, Modal, ControlLabel, FormControl, Form, FormGroup, Col, ProgressBar, HelpBlock} from 'react-bootstrap';
 /* eslint-disable no-undef */
 class User extends React.Component {
     constructor(props) {
@@ -12,7 +12,9 @@ class User extends React.Component {
                 password: "111111",
                 role: this.props.user.role,
                 passwordChanged: false,
-                saving: false
+                confirmPassword: "",
+                saving: false,
+                passwordMismatch:false,
             };
         } else {
             this.state = {
@@ -20,7 +22,11 @@ class User extends React.Component {
                 lastName: "",
                 username: "",
                 password: "",
-                role: 5
+                confirmPassword: "",
+                role: 5,
+                saving: false,
+                passwordMismatch:false,
+                passwordChanged: false,
             };
         }
     }
@@ -42,8 +48,8 @@ class User extends React.Component {
             role: this.state.role
         };
 
-        if(this.state.passwordChanged && this.state.password.length) {
-            user["password"] = this.state.password;
+        if(this.state.passwordChanged) {
+            user.password = this.state.password;
         }
 
         let existingUser = this.props.user;
@@ -72,11 +78,20 @@ class User extends React.Component {
     }
 
     render() {
+        const isNewUser = !this.props.user;
         const firstName = this.state.firstName;
         const lastName = this.state.lastName;
         const username = this.state.username;
         const password = this.state.password;
+        const isAdmin = parseInt(sessionStorage.role, 10) === 99;
+        const isSelf = !isNewUser && sessionStorage.username===username;
+        const confirmPassword = this.state.confirmPassword;
+        const passwordChanged = this.state.passwordChanged;
         const role = this.state.role;
+        const passwordMismatch = !(password===confirmPassword);
+        const invalidPasswordLength = password.length===0 || confirmPassword.length===0;
+        const invalidPassword = (passwordChanged || isNewUser) && (passwordMismatch || invalidPasswordLength);
+        const preventAdminEdit = role===99 && isAdmin && !isSelf;
 
         return(
             <div>
@@ -91,7 +106,7 @@ class User extends React.Component {
                                     First Name
                                 </Col>
                                 <Col sm={6}>
-                                    <FormControl type="text" placeholder="First Name" value={firstName} onChange={(e) => this.handleUserInfoChange({'firstName': e.target.value})} />
+                                    <FormControl type="text" placeholder="First Name" value={firstName} onChange={(e) => this.handleUserInfoChange({'firstName': e.target.value})} disabled={preventAdminEdit} />
                                 </Col>
                             </FormGroup>
                             <FormGroup>
@@ -99,7 +114,7 @@ class User extends React.Component {
                                     Last Name
                                 </Col>
                                 <Col sm={6}>
-                                    <FormControl type="text" placeholder="Last Name" value={lastName} onChange={(e) => this.handleUserInfoChange({'lastName': e.target.value})} />
+                                    <FormControl type="text" placeholder="Last Name" value={lastName} onChange={(e) => this.handleUserInfoChange({'lastName': e.target.value})} disabled={preventAdminEdit} />
                                 </Col>
                             </FormGroup>
                             <FormGroup>
@@ -107,15 +122,26 @@ class User extends React.Component {
                                     Username
                                 </Col>
                                 <Col sm={6}>
-                                    <FormControl type="text" placeholder="Username" value={username} onChange={(e) => this.handleUserInfoChange({'username':e.target.value})} disabled={!!this.props.user}/>
+                                    <FormControl type="text" placeholder="Username" value={username} onChange={(e) => this.handleUserInfoChange({'username':e.target.value})} disabled={!isNewUser}/>
                                 </Col>
                             </FormGroup>
-                            <FormGroup>
+                            <FormGroup validationState={invalidPassword?"error":null}>
                                 <Col componentClass={ControlLabel} sm={4}>
                                     Password
                                 </Col>
                                 <Col sm={6}>
-                                    <FormControl type="password" placeholder="Password" value={password} onChange={(e) => this.handleUserInfoChange({'password':e.target.value, 'passwordChanged':true})} />
+                                    <FormControl type="password" placeholder="Password" value={password} onChange={(e) => this.handleUserInfoChange({'password':e.target.value.trim(), 'passwordChanged':true})} disabled={preventAdminEdit} />
+                                </Col>
+                            </FormGroup>
+                            <FormGroup validationState={invalidPassword?"error":null}>
+                                <Col componentClass={ControlLabel} sm={4}>
+                                    Confirm Password
+                                </Col>
+                                <Col sm={6}>
+                                    <FormControl type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => this.handleUserInfoChange({'confirmPassword':e.target.value.trim(), 'passwordChanged':true})} disabled={preventAdminEdit} />
+                                    <FormControl.Feedback />
+                                    {(passwordChanged || isNewUser) && passwordMismatch && <HelpBlock>Passwords do not match</HelpBlock>}
+                                    {(passwordChanged || isNewUser) && invalidPasswordLength && <HelpBlock>Password cannot be blank</HelpBlock>}
                                 </Col>
                             </FormGroup>
                             <FormGroup>
@@ -123,7 +149,7 @@ class User extends React.Component {
                                     Role
                                 </Col>
                                 <Col sm={6}>
-                                    <FormControl componentClass="select" placeholder="Role" value={role} onChange={(e) => this.handleUserInfoChange({'role':parseInt(e.target.value, 10)})} disabled={role === 100}>
+                                    <FormControl componentClass="select" placeholder="Role" value={role} onChange={(e) => this.handleUserInfoChange({'role':parseInt(e.target.value, 10)})} disabled={preventAdminEdit || role === 100}>
                                         <option value="5">Staff</option>
                                         <option value="99">Admin</option>
                                         {role === 100 && <option value="100">Root</option>}
@@ -133,7 +159,7 @@ class User extends React.Component {
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button bsStyle="primary" onClick={() => this.save()} >
+                        <Button bsStyle="primary" onClick={() => this.save()} disabled={invalidPassword}>
                             Save
                         </Button>
                         <Button onClick={() => this.closeModal()}>Close</Button>
