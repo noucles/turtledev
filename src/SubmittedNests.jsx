@@ -38,6 +38,7 @@ class SubmittedNests extends React.Component {
 
     closeShowNest() {
         this.setState({showModal: false});
+        this.getNests();
     }
 
     deleteNest(nest) {

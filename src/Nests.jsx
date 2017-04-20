@@ -1,5 +1,5 @@
 import React from 'react';
-import {ListGroup, ListGroupItem, Button, Panel, ProgressBar, FormGroup, FormControl, Form, Col, ControlLabel} from 'react-bootstrap';
+import {Button, Panel, ProgressBar, FormGroup, FormControl, Form, ControlLabel} from 'react-bootstrap';
 import Nest from './Nest';
 /* eslint-disable no-undef */
 
@@ -41,8 +41,10 @@ class SubmittedNests extends React.Component {
         this.setState({family: family});
     }
 
-    showNest(nest) {
-        this.setState({showModal: true, selectedNest:nest});
+    showNest(event, nest) {
+        if(event.target.tagName !== "BUTTON") {
+            this.setState({showModal: true, selectedNest: nest});
+        }
     }
 
     closeNest() {
@@ -91,36 +93,36 @@ class SubmittedNests extends React.Component {
     }
 
     render() {
+        let mouseStyle = {cursor: "pointer"};
         let content;
         let family = this.state.family;
+
         if(this.state.list) {
             const list = this.state.list.map((nest) =>
-                <ListGroupItem onClick={() => this.showNest(nest)} key={nest.nestId}>
+                <a className="list-group-item" style={mouseStyle} onClick={(e) => this.showNest(e,nest)} key={nest.nestId}>
                     {nest.nestId}
-                </ListGroupItem>
+                    <Button bsSize="xsmall" bsStyle="danger" className={"pull-right"} onClick={()=> this.deleteNest(nest)}>Delete</Button>
+                </a>
             );
 
             content = (
                 <div>
                     <Form inline>
                         <FormGroup>
-                            <Col componentClass={ControlLabel} sm={4}>
-                                Family
-                            </Col>
-                            <Col sm={6}>
-                                <FormControl componentClass="select" placeholder="Role" value={family} onChange={(e) => this.changeFamilyHandler(e)}>
-                                    <option value="general">General</option>
-                                    <option value="miami">Miami</option>
-                                    <option value="ftlauderdale">Fort Lauderdale</option>
-                                </FormControl>
-                            </Col>
+                            <ControlLabel>Family</ControlLabel>
+                            {' '}
+                            <FormControl componentClass="select" placeholder="Role" value={family} onChange={(e) => this.changeFamilyHandler(e)}>
+                                <option value="general">General</option>
+                                <option value="miami">Miami</option>
+                                <option value="ftlauderdale">Fort Lauderdale</option>
+                            </FormControl>
                         </FormGroup>
                         {' '}
                         <Button onClick={() => this.exportNests()}>Export</Button>
                     </Form>
-                    <ListGroup>
+                    <div className="list-group">
                         {list}
-                    </ListGroup>
+                    </div>
                     {this.state.showModal &&
                     <Nest nest={this.state.selectedNest} closeNest={() => this.closeNest()}/>
                     }
