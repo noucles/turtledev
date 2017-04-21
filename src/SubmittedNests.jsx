@@ -1,6 +1,6 @@
 import React from 'react';
 import ShowNest from './ShowNest';
-import {Button, ListGroup, ListGroupItem, ProgressBar} from 'react-bootstrap';
+import {Button, ProgressBar} from 'react-bootstrap';
 /* eslint-disable no-undef */
 
 class SubmittedNests extends React.Component {
@@ -59,11 +59,12 @@ class SubmittedNests extends React.Component {
     render() {
         let content = null;
         if(this.state.list) {
+            let mouseStyle = {cursor: "pointer"};
             content = this.state.list.map((nest) =>
-                <ListGroupItem href="#" onClick={(event) => this.showNest(event, nest)} key={nest.nestId}>
+                <a className="list-group-item" style={mouseStyle} onClick={(event) => this.showNest(event, nest)} key={nest.nestId}>
                     {nest.nestId}
                     <Button bsSize="xsmall" bsStyle="danger" className={"pull-right"} onClick={()=> this.deleteNest(nest)}>Delete</Button>
-                </ListGroupItem>
+                </a>
             );
         }
         else {
@@ -72,9 +73,9 @@ class SubmittedNests extends React.Component {
 
         return(
             <div>
-                <ListGroup>
+                <div className="list-group">
                     {content}
-                </ListGroup>
+                </div>
                 {this.state.showModal &&
                 <ShowNest nest={this.state.selectedNest} closeShowNest={() => this.closeShowNest()}/>
                 }
