@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Modal, Thumbnail, ControlLabel, FormControl, Form, FormGroup, Col} from 'react-bootstrap';
+import {Button, Modal, Thumbnail, ControlLabel, FormControl, Form, FormGroup, Col, ProgressBar} from 'react-bootstrap';
 /* eslint-disable no-undef */
 class Nest extends React.Component {
     constructor(props) {
@@ -14,6 +14,7 @@ class Nest extends React.Component {
             addedImages: [],
             photos: this.props.nest.photos,
             newIdCounter: 1,
+            saving: false
         };
     }
 
@@ -137,6 +138,7 @@ class Nest extends React.Component {
             mode: "cors"
         };
 
+        this.setState({saving:true});
         this.modifyImages().then((photos) => {
 
             photos = photos.map((photo) => photo.photoId);
@@ -151,7 +153,7 @@ class Nest extends React.Component {
                     this.props.closeNest();
                 });
             }
-        })
+        });
     }
 
     render() {
@@ -179,7 +181,6 @@ class Nest extends React.Component {
            )
             }
         );
-
 
         return(
             <Modal show={true} onHide={() => this.closeModal()}>
@@ -261,6 +262,14 @@ class Nest extends React.Component {
                     </Button>
                     <Button onClick={() => this.closeModal()}>Close</Button>
                 </Modal.Footer>
+                <Modal show={this.state.saving}>
+                    <Modal.Header>
+                        <Modal.Title>Saving Nest...</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <ProgressBar active now={100} />
+                    </Modal.Body>
+                </Modal>
             </Modal>
         );
     }
