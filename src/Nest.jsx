@@ -151,6 +151,7 @@ class Nest extends React.Component {
                     return response.json();
                 }).then(() => {
                     this.props.closeNest();
+                    this.setState({saving:false});
                 });
             }
         });
