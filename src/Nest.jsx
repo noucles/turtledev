@@ -272,7 +272,7 @@ class Nest extends React.Component {
                                 Picture
                             </Col>
                             <Col sm={6}>
-                                <FormControl type="file" onChange={(e) => this.handleFile(e.target.files[0])} accept="image/*" />
+                                <FormControl type="file" onChange={(e) => this.handleFile(e.target.files[0])} accept="image/jpeg" />
                             </Col>
                         </FormGroup>
                         <FormGroup>
