@@ -97,7 +97,7 @@ class User extends React.Component {
             <div>
                 <Modal show={true} onHide={() => this.closeModal()}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Nest Information</Modal.Title>
+                        <Modal.Title>User Information</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form horizontal>

@@ -131,7 +131,7 @@ class MarkNest extends React.Component {
                         Picture
                     </Col>
                     <Col sm={6}>
-                        <FormControl type="file" onChange={(e) => this.handleFile(e.target.files[0])} />
+                        <FormControl type="file" onChange={(e) => this.handleFile(e.target.files[0])} accept="image/*"/>
                         <HelpBlock>Upload track pattern picture</HelpBlock>
                     </Col>
                 </FormGroup>
