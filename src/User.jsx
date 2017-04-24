@@ -149,7 +149,7 @@ class User extends React.Component {
                                     Role
                                 </Col>
                                 <Col sm={6}>
-                                    <FormControl componentClass="select" placeholder="Role" value={role} onChange={(e) => this.handleUserInfoChange({'role':parseInt(e.target.value, 10)})} disabled={preventAdminEdit || role === 100}>
+                                    <FormControl componentClass="select" placeholder="Role" value={role} onChange={(e) => this.handleUserInfoChange({'role':parseInt(e.target.value, 10)})} disabled={preventAdminEdit || isSelf}>
                                         <option value="5">Staff</option>
                                         <option value="99">Admin</option>
                                         {role === 100 && <option value="100">Root</option>}
