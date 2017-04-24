@@ -5,7 +5,7 @@ import {browserHistory} from 'react-router'
 class Login extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {userName:null, password:null, authFailed: false};
+        this.state = {userName:null, password:null, authFailed: false, authenticating: false};
     }
 
     componentDidMount() {
@@ -71,6 +71,7 @@ class Login extends React.Component {
     }
 
     render() {
+        let authenticating = this.state.authenticating;
         return (
             <Grid>
                 <Row>
@@ -98,8 +99,8 @@ class Login extends React.Component {
                                 </FormGroup>
                                 <FormGroup>
                                     <Col mdOffset={4} md={6}>
-                                        <Button bsStyle="primary" onClick={() => this.authenticate()} >
-                                            Sign in
+                                        <Button bsStyle="primary" onClick={() => this.authenticate()} disabled={authenticating}>
+                                            {authenticating?"Authenticating":"Sign in"}
                                         </Button>
                                     </Col>
                                 </FormGroup>

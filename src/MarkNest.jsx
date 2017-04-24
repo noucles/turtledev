@@ -1,11 +1,11 @@
 import React from 'react';
-import {Col, Form, FormGroup, Button, Modal, FormControl, HelpBlock, ControlLabel, ProgressBar} from 'react-bootstrap';
+import {Col, Form, FormGroup, Button, Modal, FormControl, HelpBlock, ControlLabel, ProgressBar, Glyphicon} from 'react-bootstrap';
 import { browserHistory } from 'react-router';
 /* eslint-disable no-undef */
 class MarkNest extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showModal: false, location:null, imageFile: null, saving: false, notes: "", family: "general"};
+        this.state = {showModal: false, nestLocation: null, currentLocation:null, imageFile: null, saving: false, notes: "", family: "general"};
     }
 
     closeModal(){
@@ -13,7 +13,10 @@ class MarkNest extends React.Component {
     }
 
     confirmLocation() {
-       this.closeModal();
+        let currentLocation = this.state.currentLocation;
+        this.setState({nestLocation: currentLocation});
+        this.closeModal();
+
     }
 
     cancelLocation() {
@@ -41,14 +44,14 @@ class MarkNest extends React.Component {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 let location = {latitude:position.coords.latitude, longitude:position.coords.longitude};
-                this.setState({location:location, showModal: true});
+                this.setState({currentLocation:location, showModal: true});
             });
         }
     }
 
     save() {
         this.setState({saving:true});
-        let location = this.state.location;
+        let location = this.state.nestLocation;
         let picture = this.state.imageFile;
         let notes = this.state.notes;
         let family = this.state.family;
@@ -61,7 +64,7 @@ class MarkNest extends React.Component {
             mode: "cors"
         };
 
-        if(picture && location) {
+        if(picture) {
             headers.append('Content-Type', 'application/octet-stream');
             config.body = picture;
             config.headers = headers;
@@ -78,7 +81,7 @@ class MarkNest extends React.Component {
                     browserHistory.push('/');
                 });
             });
-        } else if(location) {
+        } else {
             headers.append('Content-Type', 'application/json');
             config.body = JSON.stringify({location:location, family:family, notes: notes});
             config.headers = headers;
@@ -93,7 +96,7 @@ class MarkNest extends React.Component {
 
     componentDidUpdate() {
         if(this.state.showModal) {
-            let location = this.state.location;
+            let location = this.state.currentLocation;
             let latlon = new google.maps.LatLng(location.latitude, location.longitude);
 
             let myOptions = {
@@ -111,12 +114,16 @@ class MarkNest extends React.Component {
     render() {
         let notes = this.state.notes;
         let family = this.state.family;
+        let valid = this.state.imageFile || this.state.nestLocation;
 
         return(
             <Form horizontal>
                 <FormGroup>
-                    <Col sm={6} smOffset={3}>
-                        <Button onClick={() => this.getUserLocations()} bsStyle="primary" bsSize="large" block>Get Current Location</Button>
+                    <Col componentClass={ControlLabel} sm={4}>
+                        Get Location
+                    </Col>
+                    <Col sm={6}>
+                        <Button onClick={() => this.getUserLocations()} bsStyle="primary"><Glyphicon glyph="map-marker" /></Button>
                     </Col>
                 </FormGroup>
                 <FormGroup>
@@ -149,8 +156,8 @@ class MarkNest extends React.Component {
                     </Col>
                 </FormGroup>
                 <FormGroup>
-                    <Col sm={6} smOffset={3}>
-                        <Button onClick={() => this.save()} bsStyle="primary" bsSize="large" block>Save</Button>
+                    <Col sm={6} smOffset={4}>
+                        <Button onClick={() => this.save()} bsStyle="primary" bsSize="large" block disabled={!valid}>Save</Button>
                     </Col>
                 </FormGroup>
                 <Modal show={this.state.showModal} onHide={() => this.closeModal()}>

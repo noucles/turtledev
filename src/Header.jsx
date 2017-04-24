@@ -8,6 +8,9 @@ class Header extends React.Component {
         return (
             <Navbar>
                 <Navbar.Header>
+                    <Navbar.Brand>
+                        <a href="/">TurtleDev</a>
+                    </Navbar.Brand>
                     <Navbar.Text>
                         Hello, {this.props.userName}
                     </Navbar.Text >

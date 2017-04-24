@@ -1,0 +1,15 @@
+@media (min-width:768px) and (max-width: 991px) {
+    .form-group > .col-md-3:nth-child(2n+3), .form-group > .col-xs-6:nth-child(2n+3) {
+        clear: left;
+    }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+    .form-group > .col-md-3:nth-child(3n+4), .form-group > .col-xs-3:nth-child(3n+4) {
+        clear: left;
+    }
+}
+@media (min-width: 1200px) {
+    .form-group > .col-md-3:nth-child(4n+5), .form-group > .col-xs-6:nth-child(4n+5) {
+        clear: left;
+    }
+}

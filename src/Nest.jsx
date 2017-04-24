@@ -18,6 +18,22 @@ class Nest extends React.Component {
         };
     }
 
+    componentDidMount() {
+        let latitude = this.state.latitude;
+        let longitude = this.state.longitude;
+        let latlon = new google.maps.LatLng(latitude, longitude);
+
+        let myOptions = {
+            center: latlon, zoom: 14,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapTypeControl: false,
+            navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL}
+        };
+
+        let map = new google.maps.Map(document.getElementById("map"), myOptions);
+        new google.maps.Marker({position: latlon, map: map, title: "Nest Location"});
+    }
+
     handleFile(file) {
         let addedImages = this.state.addedImages;
         let photos = this.state.photos;
@@ -150,8 +166,8 @@ class Nest extends React.Component {
                 fetch(process.env.REACT_APP_API_URL + "nest/" + this.props.nest.nestId, config).then(function(response){
                     return response.json();
                 }).then(() => {
-                    this.props.closeNest();
                     this.setState({saving:false});
+                    this.props.closeNest();
                 });
             }
         });
@@ -166,9 +182,11 @@ class Nest extends React.Component {
             let url;
             let newPhoto = false;
             if(photo.tempId) {
+                console.log(photo.tempId);
                 id = photo.tempId?photo.tempId:photo;
                 url = photo.raw;
                 newPhoto = true;
+                console.log(id);
             } else {
                 id = photo;
                 url = process.env.REACT_APP_API_URL + "photo/" + id;
@@ -237,6 +255,16 @@ class Nest extends React.Component {
                             </Col>
                             <Col sm={6}>
                                 <FormControl type="text" placeholder="Longitude" value={this.state.longitude} onChange={(e) => this.changeLongitudeHandler(e)} />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup>
+                            <Col componentClass={ControlLabel} sm={4}>
+                                Map
+                            </Col>
+                            <Col sm={8}>
+                                <div className="embed-responsive embed-responsive-16by9" >
+                                    <div id="map" className="embed-responsive-item"></div>
+                                </div>
                             </Col>
                         </FormGroup>
                         <FormGroup>

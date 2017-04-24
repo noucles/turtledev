@@ -1,5 +1,5 @@
 import React from 'react';
-import ShowNest from './ShowNest';
+import Nest from './Nest';
 import {Button, ProgressBar} from 'react-bootstrap';
 /* eslint-disable no-undef */
 
@@ -77,7 +77,7 @@ class SubmittedNests extends React.Component {
                     {content}
                 </div>
                 {this.state.showModal &&
-                <ShowNest nest={this.state.selectedNest} closeShowNest={() => this.closeShowNest()}/>
+                <Nest nest={this.state.selectedNest} closeNest={() => this.closeShowNest()}/>
                 }
             </div>
         );
