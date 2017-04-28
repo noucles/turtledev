@@ -38,7 +38,7 @@ class EnsureLoggedInContainer extends React.Component {
                                 {this.props.children}
                             </Col>
                         </Row>
-                    </Grid>;
+                    </Grid>
                 </div>
             );
         } else {
