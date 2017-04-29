@@ -82,7 +82,7 @@ class Login extends React.Component {
                             <Form horizontal>
                                 <FormGroup validationState={this.state.authFailed?"error":null}>
                                     <Col componentClass={ControlLabel} md={4}>
-                                        Email
+                                        User Name
                                     </Col>
                                     <Col md={6}>
                                         <FormControl type="text" placeholder="Username" onChange={(e)=> this.handleUserNameChange(e)}/>
