@@ -44,11 +44,13 @@ class Login extends React.Component {
             } else {
                 throw new Error('Authentication failed: Role information missing');
             }
-
+            this.setState({authenticating: false});
         }).catch((error) => {
             console.log(error.message);
-            this.setState({authFailed:true});
+            this.setState({authFailed:true, authenticating: false});
         });
+
+        this.setState({authenticating: true});
     }
 
     handleUserNameChange(e) {
